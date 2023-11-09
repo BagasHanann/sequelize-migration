@@ -1,4 +1,6 @@
 const { User } = require('../models');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 module.exports = {
 	getAllUsers: async (req, res) => {
@@ -21,5 +23,37 @@ module.exports = {
 		});
 	},
 
-	addUser: async (req, res) => {},
+	createUser: async (req, res) => {
+		try {
+			const { name, email, password } = req.body;
+
+			const hashedPassword = await bcrypt.hash(password, 10);
+			const user = await User.create({ name, email, password: hashedPassword });
+			res.status(201).json(user);
+		} catch (error) {
+			res.status(400).json({ error: error.message });
+		}
+	},
+
+	loginUser: async (req, res) => {
+		try {
+			const { name, email, password } = req.body;
+			const user = await User.findOne({ where: { name, email } });
+
+			if (user) {
+				const passwordMatch = await bcrypt.compare(password, user.password);
+
+				if (passwordMatch) {
+					const token = jwt.sign({ userId: user.id }, 'your_secret_key');
+					res.json({ token });
+				} else {
+					res.status(401).json({ error: 'Invalid credentials' });
+				}
+			} else {
+				res.status(401).json({ error: 'Invalid credentials' });
+			}
+		} catch (error) {
+			res.status(400).json({ error: error.message });
+		}
+	},
 };
