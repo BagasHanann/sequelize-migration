@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { User } = require('../models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -44,10 +45,10 @@ module.exports = {
 				const passwordMatch = await bcrypt.compare(password, user.password);
 
 				if (passwordMatch) {
-					const token = jwt.sign({ userId: user.id }, 'your_secret_key');
-					res.json({ token });
+					const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
+					res.json({ message: 'Login success', token });
 				} else {
-					res.status(401).json({ error: 'Invalid credentials' });
+					res.status(401).json({ error: 'Password salah' });
 				}
 			} else {
 				res.status(401).json({ error: 'Invalid credentials' });
