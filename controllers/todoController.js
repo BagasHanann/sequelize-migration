@@ -48,4 +48,15 @@ module.exports = {
 			res.status(400).json({ error: error.message });
 		}
 	},
+
+	deleteAllTodos: async (req, res) => {
+		try {
+			const todos = await Todo.destroy({ where: { userId: req.user.userId } });
+			res
+				.status(200)
+				.json({ message: 'All todos deleted successfully', todos });
+		} catch (error) {
+			res.status(400).json({ error: error.message });
+		}
+	},
 };
