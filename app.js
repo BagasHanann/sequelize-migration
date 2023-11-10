@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.use(allRoutes);
 app.get('/', (req, res) => {
-	res.send('Success');
+	res.send('Success!!');
 });
 
 app.listen(PORT, () => {
