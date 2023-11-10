@@ -9,6 +9,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use(allRoutes);
+app.get('/', (req, res) => {
+	res.send('Success');
+})
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
